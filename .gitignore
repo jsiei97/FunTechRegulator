@@ -1,0 +1,11 @@
+#The exec
+FunTechRegulator
+
+#Build dir with obj
+build/
+
+#Index files
+cscope.files
+cscope.out
+tags
+
