@@ -1,0 +1,6 @@
+[submodule "mod/qpiOneWire"]
+	path = mod/qpiOneWire
+	url = git@github.com:jsiei97/qpiOneWire.git
+[submodule "mod/qpiGPIO"]
+	path = mod/qpiGPIO
+	url = git@github.com:jsiei97/qpiGPIO.git
