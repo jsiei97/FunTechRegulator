@@ -18,11 +18,10 @@ HEADERS += PID_v1.h
 
 SOURCES += Sensor.cpp
 HEADERS += Sensor.h
-
-# The submodules
 include($$PWD/mod/qpiOneWire/mod.pri)
 
 SOURCES += BigPWM.cpp
 HEADERS += BigPWM.h
 SOURCES += Output.cpp
 HEADERS += Output.h
+include($$PWD/mod/qpiGPIO/mod.pri)

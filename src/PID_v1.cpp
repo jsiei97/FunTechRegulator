@@ -86,7 +86,7 @@ bool PID::compute(double input, double *output)
     unsigned long now = timer.elapsed();
     unsigned long timeChange = (now - lastTime);
 
-    myOut() << now << timeChange;
+    //myOut() << now << timeChange;
 
     //if(timeChange >= sampleTime)
     {
@@ -108,7 +108,6 @@ bool PID::compute(double input, double *output)
 
 
         // Compute PID output
-        //double output = kp * error + iTerm - kd * dInput;
         *output = kp * error + iTerm - kd * dInput;
 
         if(*output > outMax)
@@ -122,7 +121,7 @@ bool PID::compute(double input, double *output)
 
         myOutput = *output;
 
-        myOut() << input << error << iTerm << dInput << *output;
+        myOut() << input << mySetpoint << *output;
         // Remember some variables for next time
         lastInput = input;
         lastTime = now;

@@ -1,6 +1,11 @@
 #ifndef  __OUTPUT_H
 #define  __OUTPUT_H
 
+#include "BigPWM.h"
+#include "gpio_RaspberryPi.h"
+#include "SysfsGPIO.h"
+
+#include <QElapsedTimer>
 
 typedef enum OT
 {
@@ -13,6 +18,10 @@ class Output
     private:
         OutputType type;
 
+        BigPWM *pwm;
+        GPIO_Pin gpiopin;
+        QElapsedTimer timer;
+
         QString name;
         QString in;
 
@@ -23,6 +32,8 @@ class Output
         void setInput(QString out);
 
         bool putValue(double value);
+        void setPwmGpio(QString gpionr);
+
         void print();
 };
 

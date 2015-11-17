@@ -115,8 +115,7 @@ int main()
             }
             else if(action.contains("pwm_gpio", Qt::CaseInsensitive))
             {
-                /// @todo create...
-                //outputs[name].setPwmGpio(value);
+                outputs[name].setPwmGpio(value);
             }
         }
         settings.endGroup();
@@ -145,7 +144,8 @@ int main()
 
 
     myOut() << "Print results:";
-    for( int i=0 ; i<10 ; i++ )
+    //for( int i=0 ; i<10 ; i++ )
+    while(true)
     {
         loopTimer.mark(timer.elapsed());
         myOut() << "Loop:" << timer.elapsed() << "ms";

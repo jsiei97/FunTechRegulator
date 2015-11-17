@@ -52,12 +52,9 @@ bool Regul::compute()
         }
         return res;
     }
-    else
-    {
-        //Error count...
-        //return false???
-    }
 
+    myErr() << "Problem with sensor getValue";
+    return false;
 }
 
 
