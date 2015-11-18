@@ -9,10 +9,13 @@
 
 #include "Output.h"
 
+#include "MosqConnect.h"
+
 Regul::Regul()
 {
     sensor = NULL;
     out    = NULL;
+    mqtt   = NULL;
 
     name = "Default name";
 
@@ -49,6 +52,17 @@ bool Regul::compute()
         if(res)
         {
             out->putValue(tmpout);
+            if(NULL != mqtt)
+            {
+                //value=%d.%02d ; setpoint=%d.%02d ; output=%03d%%"
+                QString str = QString("value=%1 ; setpoint=%2 ; output=%3\%")
+                    .arg(input,    0, 'f', 2)
+                    .arg(setpoint, 0, 'f', 2)
+                    .arg(tmpout,   0, 'f', 0);
+
+                myOut() << mqttPublishTopic << str;
+                mqtt->pub(mqttPublishTopic, str);
+            }
         }
         return res;
     }
@@ -61,6 +75,18 @@ bool Regul::compute()
 void Regul::setName(QString name)
 {
     this->name = name;
+}
+
+void Regul::setMQTTpublish(QString topic, MosqConnect *mqtt)
+{
+    mqttPublishTopic = topic;
+    this->mqtt = mqtt;
+}
+
+void Regul::setMQTTsubscribe(QString topic, MosqConnect *mqtt)
+{
+    mqttSubscribeTopic = topic;
+    this->mqtt = mqtt;
 }
 
 void Regul::setInput(Sensor *s)

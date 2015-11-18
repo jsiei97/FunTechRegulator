@@ -10,9 +10,22 @@
 
 #include "Output.h"
 #include "LoopTimer.h"
+#include "MosqConnect.h"
+#include <mosquitto.h>
+#define DATA_LENGTH 160
+#define MAX_SIZE 100
+MosqConnect *mqtt;
 
 int main()
 {
+    int rc;
+    mosqpp::lib_init();
+    mqtt = new MosqConnect(
+            "FunTechRegulator",
+            "mosqhub",
+            1883
+            );
+
     /// @todo setting file as arg
     QSettings settings("test.ini", QSettings::IniFormat);
 
@@ -43,6 +56,15 @@ int main()
             {
                 regulators[name].setName(value);
             }
+            else if(action.contains("publish", Qt::CaseInsensitive))
+            {
+                regulators[name].setMQTTpublish(value, mqtt);
+            }
+            else if(action.contains("subscribe", Qt::CaseInsensitive))
+            {
+                regulators[name].setMQTTsubscribe(value, mqtt);
+            }
+
         }
         settings.endGroup();
         myOut() << "";
@@ -160,7 +182,15 @@ int main()
             }
             regulators[i.key()].print();
         }
+
+        rc = mqtt->loop();
+        if(rc){
+            mqtt->reconnect();
+        }
+
         usleep(loopTimer.correctedTime(timer.elapsed())*1000);
     }
+
+    mosqpp::lib_cleanup();
     return 0;
 }

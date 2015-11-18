@@ -4,6 +4,8 @@ DEPENDPATH  +=  src
 INCLUDEPATH +=  src
 OBJECTS_DIR = build
 
+LIBS += -lmosquittopp -lmosquitto
+
 # Input
 SOURCES += main.cpp
 HEADERS += Debug.h
@@ -25,3 +27,6 @@ HEADERS += BigPWM.h
 SOURCES += Output.cpp
 HEADERS += Output.h
 include($$PWD/mod/qpiGPIO/mod.pri)
+
+SOURCES += MosqConnect.cpp
+HEADERS += MosqConnect.h
