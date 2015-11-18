@@ -87,6 +87,7 @@ void Regul::setMQTTsubscribe(QString topic, MosqConnect *mqtt)
 {
     mqttSubscribeTopic = topic;
     this->mqtt = mqtt;
+    /// @todo mqtt->subscribe
 }
 
 void Regul::setInput(Sensor *s)
