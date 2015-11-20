@@ -72,7 +72,11 @@ class PID
          * of changing tunings during runtime for Adaptive control
          */
         void setTunings(double, double, double);
+        void setTuningP(double p);
+        void setTuningI(double i);
+        void setTuningD(double d);
 
+        void setSetpoint(double);
         /**
          * Sets the Direction, or "Action" of the controller.
          * DIRECT means the output will increase when error is positive.

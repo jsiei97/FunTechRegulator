@@ -51,14 +51,15 @@ bool Regul::compute()
         bool res = pid->compute(input, &tmpout);
         if(res)
         {
-            out->putValue(tmpout);
+            output = tmpout;
+            out->putValue(output);
             if(NULL != mqtt)
             {
                 //value=%d.%02d ; setpoint=%d.%02d ; output=%03d%%"
                 QString str = QString("value=%1 ; setpoint=%2 ; output=%3\%")
                     .arg(input,    0, 'f', 2)
                     .arg(setpoint, 0, 'f', 2)
-                    .arg(tmpout,   0, 'f', 0);
+                    .arg(output,   0, 'f', 0);
 
                 myOut() << mqttPublishTopic << str;
                 mqtt->pub(mqttPublishTopic, str);
@@ -99,15 +100,79 @@ void Regul::setOutput(Output *out)
 {
     this->out = out;
 }
+
+void Regul::setKp(QString value)
+{
+    bool ok;
+    double tmpvalue = value.toDouble(&ok);
+    if(false==ok)
+    {
+        myErr() << "Bad value" << value;
+        return;
+    }
+
+    pid->setTuningP(tmpvalue);
+}
+
+void Regul::setKi(QString value)
+{
+    bool ok;
+    double tmpvalue = value.toDouble(&ok);
+    if(false==ok)
+    {
+        myErr() << "Bad value" << value;
+        return;
+    }
+
+    pid->setTuningI(tmpvalue);
+}
+
+void Regul::setKd(QString value)
+{
+    bool ok;
+    double tmpvalue = value.toDouble(&ok);
+    if(false==ok)
+    {
+        myErr() << "Bad value" << value;
+        return;
+    }
+
+    pid->setTuningD(tmpvalue);
+}
+
+void Regul::setSetpoint(QString value)
+{
+    bool ok;
+    double tmpvalue = value.toDouble(&ok);
+    if(false==ok)
+    {
+        myErr() << "Bad value" << value;
+        return;
+    }
+    setpoint = tmpvalue;
+    pid->setSetpoint(setpoint);
+}
+
 void Regul::print()
 {
+    QString info(name);
+
+    info.append(QString("\n\tsensor=%1 setpoint=%2 output=%3\%")
+                    .arg(input,    0, 'f', 2)
+                    .arg(setpoint, 0, 'f', 2)
+                    .arg(output,   0, 'f', 0));
+
+    info.append(QString("\n\tp=%1 i=%2 d=%3")
+        .arg(pid->getKp())
+        .arg(pid->getKi())
+        .arg(pid->getKd()));
+
+    myOut() << info;
+
     /*
-       myOut() << this->name << ":" << this->out;
        if(sensor != NULL)
        {
        sensor->print();
        }
        */
-
-    //myOut() << this->name << "Status" << input << setpoint << output;
 }

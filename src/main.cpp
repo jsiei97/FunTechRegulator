@@ -64,6 +64,23 @@ int main()
             {
                 regulators[name].setMQTTsubscribe(value, mqtt);
             }
+            //The PID variables
+            else if(action.contains("kp", Qt::CaseInsensitive))
+            {
+                regulators[name].setKp(value);
+            }
+            else if(action.contains("ki", Qt::CaseInsensitive))
+            {
+                regulators[name].setKi(value);
+            }
+            else if(action.contains("kd", Qt::CaseInsensitive))
+            {
+                regulators[name].setKd(value);
+            }
+            else if(action.contains("setpoint", Qt::CaseInsensitive))
+            {
+                regulators[name].setSetpoint(value);
+            }
 
         }
         settings.endGroup();
@@ -150,6 +167,7 @@ int main()
         while (i.hasNext()) {
             i.next();
             //myOut() << i.key();
+            regulators[i.key()].print();
             int err = regulators[i.key()].start();
             if(0 != err)
             {
@@ -166,8 +184,8 @@ int main()
 
 
     myOut() << "Print results:";
-    //for( int i=0 ; i<10 ; i++ )
-    while(true)
+    for( int i=0 ; i<10 ; i++ )
+    //while(true)
     {
         loopTimer.mark(timer.elapsed());
         myOut() << "Loop:" << timer.elapsed() << "ms";
@@ -180,7 +198,7 @@ int main()
             {
                 myErr() << i.key() << "failed to compute";
             }
-            regulators[i.key()].print();
+            //regulators[i.key()].print();
         }
 
         rc = mqtt->loop();

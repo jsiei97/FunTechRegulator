@@ -132,7 +132,23 @@ bool PID::compute(double input, double *output)
     return false;
 }
 
+void PID::setTuningP(double p)
+{
+    setTunings(p, dispKi, dispKd);
+}
+void PID::setTuningI(double i)
+{
+    setTunings(dispKp, i, dispKd);
+}
+void PID::setTuningD(double d)
+{
+    setTunings(dispKp, dispKi, d);
+}
 
+void PID::setSetpoint(double setpoint)
+{
+    mySetpoint = setpoint;
+}
 /**
  * This function allows the controller's dynamic performance to be adjusted.
  * it's called automatically from the constructor, but tunings can also

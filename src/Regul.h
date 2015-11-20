@@ -33,6 +33,11 @@ class Regul
 
         void setMQTTpublish  (QString topic, MosqConnect *mqtt);
         void setMQTTsubscribe(QString topic, MosqConnect *mqtt);
+
+        void setSetpoint(QString value);
+        void setKp(QString value);
+        void setKi(QString value);
+        void setKd(QString value);
 };
 
 #endif  // __REGUL_H
