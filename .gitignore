@@ -9,3 +9,6 @@ cscope.files
 cscope.out
 tags
 
+# Autogen
+Makefile
+
