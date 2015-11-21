@@ -12,3 +12,6 @@ tags
 # Autogen
 Makefile
 
+# Misc
+*.swp
+
