@@ -84,7 +84,7 @@ bool PID::compute(double input, double *output)
         return false;
 
     unsigned long now = timer.elapsed();
-    unsigned long timeChange = (now - lastTime);
+    //unsigned long timeChange = (now - lastTime);
 
     //myOut() << now << timeChange;
 
@@ -121,7 +121,7 @@ bool PID::compute(double input, double *output)
 
         myOutput = *output;
 
-        myOut() << input << mySetpoint << *output;
+        //myOut() << input << mySetpoint << *output;
         // Remember some variables for next time
         lastInput = input;
         lastTime = now;

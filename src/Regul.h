@@ -10,20 +10,35 @@ class Regul
 {
     private:
         QString name;
+
+        Sensor *sensor;
+        PID *pid;
+        Output *out;
+
+        MosqConnect *mqtt;
         QString mqttPublishTopic;
         QString mqttSubscribeTopic;
 
-        Sensor *sensor;
-        Output *out;
-        MosqConnect *mqtt;
+        double input;     ///< The value
+        double sentInput; ///< Value sent
+        double diffInput; ///< How much diff to allow before we send
 
-        double setpoint, input, output;
-        PID *pid;
+        double setpoint;
+        double sentSetpoint;
+        //double diffSetpoint;
+
+        double output;
+        double sentOutput;
+        double diffOutput;
+
+        QElapsedTimer sendTimer;
 
     public:
         Regul();
         int start();
         bool compute();
+
+        QString timeToSend();
 
         void print();
 

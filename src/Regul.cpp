@@ -19,9 +19,19 @@ Regul::Regul()
 
     name = "Default name";
 
-    input    = 5;
-    output   = 0;
+    input = 20;
+    sentInput = 100;
+    diffInput = 0.3;
+
     setpoint = 20;
+    sentSetpoint = 100;
+    //diffSetpoint;
+
+    output     = 0;
+    sentOutput = 0;
+    diffOutput = 1;
+
+    sendTimer.start();
 
     pid = new PID(input, output, setpoint, 2, 5, 1, DIRECT);
 }
@@ -42,10 +52,12 @@ int Regul::start()
 
 bool Regul::compute()
 {
+    static unsigned sensorcheck = 0;
     double tmpvalue;
     if(sensor->getValue(&tmpvalue))
     {
         input = tmpvalue;
+        sensorcheck = 0;
 
         double tmpout;
         bool res = pid->compute(input, &tmpout);
@@ -53,25 +65,83 @@ bool Regul::compute()
         {
             output = tmpout;
             out->putValue(output);
-            if(NULL != mqtt)
+            QString str = timeToSend();
+            if(NULL != str && NULL != mqtt)
             {
-                //value=%d.%02d ; setpoint=%d.%02d ; output=%03d%%"
-                QString str = QString("value=%1 ; setpoint=%2 ; output=%3\%")
-                    .arg(input,    0, 'f', 2)
-                    .arg(setpoint, 0, 'f', 2)
-                    .arg(output,   0, 'f', 0);
-
                 myOut() << mqttPublishTopic << str;
                 mqtt->pub(mqttPublishTopic, str);
             }
         }
         return res;
     }
+    else
+    {
+        sensorcheck++;
+        if(sensorcheck == 30)
+        {
+            //This is not good, we dont have a valid read,
+            //lets tell the world (once)...
+            QString str("Alarm: Bad sensor");
+            myOut() << mqttPublishTopic << str;
+            mqtt->pub(mqttPublishTopic, str);
+
+        }
+    }
 
     myErr() << "Problem with sensor getValue";
     return false;
 }
 
+QString Regul::timeToSend()
+{
+    QString res = NULL;
+    bool timeToSend = false;
+
+
+    double diff = input-sentInput;
+    if( diff > diffInput || -diff > diffInput )
+    {
+        myOut() << "Trigger on Sensor value";
+        timeToSend = true;
+    }
+
+    if(setpoint != sentSetpoint)
+    {
+        myOut() << "Trigger on Setpoint";
+        timeToSend = true;
+    }
+
+    diff = output-sentOutput;
+    if( diff > diffOutput || -diff > diffOutput )
+    {
+        myOut() << "Trigger on Output value";
+        timeToSend = true;
+    }
+
+    //Always send every 10min
+    //Time in ms
+    if(sendTimer.hasExpired(10*60*1000)) 
+    {
+        myOut() << "Trigger on sendTimer";
+        timeToSend = true;
+    }
+
+    if(true == timeToSend)
+    {
+        sendTimer.restart();
+
+        //value=%d.%02d ; setpoint=%d.%02d ; output=%03d%%"
+        res = QString("value=%1 ; setpoint=%2 ; output=%3\%")
+            .arg(input,    0, 'f', 2)
+            .arg(setpoint, 0, 'f', 2)
+            .arg(output,   0, 'f', 0);
+
+        sentInput = input;
+        sentSetpoint = setpoint;
+        sentOutput = output;
+    }
+    return res;
+}
 
 void Regul::setName(QString name)
 {

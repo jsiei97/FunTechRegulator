@@ -156,6 +156,7 @@ int main()
             {
                 outputs[name].setPwmGpio(value);
             }
+            // Add PWM window size
         }
         settings.endGroup();
         myOut() << "";
@@ -179,16 +180,17 @@ int main()
 
     unsigned long sleepTime = 1000; //1s
     LoopTimer loopTimer(sleepTime);
+
+    unsigned long sleep = 0; 
     QElapsedTimer timer;
     timer.start();
 
 
-    myOut() << "Print results:";
-    for( int i=0 ; i<10 ; i++ )
-    //while(true)
+    myOut() << "Lets start...";
+    while(true)
     {
         loopTimer.mark(timer.elapsed());
-        myOut() << "Loop:" << timer.elapsed() << "ms";
+        //myOut() << "Time:" << timer.elapsed() << "ms Loop:" << sleep << "ms";
 
         QHashIterator<QString, Regul> i(regulators);
         while (i.hasNext()) {
@@ -201,12 +203,26 @@ int main()
             //regulators[i.key()].print();
         }
 
+
+        
+        //This check is a 1800ms operation...?
+        //switch to 
+        //http://mosquitto.org/api/files/mosquitto-h.html#mosquitto_loop_forever
+        /*
         rc = mqtt->loop();
-        if(rc){
+        myOut() << "rc" << rc;
+        if(rc)
+        {
+            myOut() << "reconnect...";
             mqtt->reconnect();
         }
+        */
 
-        usleep(loopTimer.correctedTime(timer.elapsed())*1000);
+        sleep = loopTimer.correctedTime(timer.elapsed());
+        if(sleep!=0)
+        {
+            usleep(sleep*1000);
+        }
     }
 
     mosqpp::lib_cleanup();
