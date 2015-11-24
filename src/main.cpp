@@ -208,15 +208,13 @@ int main()
         //This check is a 1800ms operation...?
         //switch to 
         //http://mosquitto.org/api/files/mosquitto-h.html#mosquitto_loop_forever
-        /*
         rc = mqtt->loop();
-        myOut() << "rc" << rc;
+        //myOut() << "rc" << rc;
         if(rc)
         {
             myOut() << "reconnect...";
             mqtt->reconnect();
         }
-        */
 
         sleep = loopTimer.correctedTime(timer.elapsed());
         if(sleep!=0)
