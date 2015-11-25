@@ -39,7 +39,7 @@ void Output::setPwmGpio(QString gpionr)
 
     type = OUTPUT_PWM_GPIO;
     pwm = new BigPWM();
-    pwm->setWindow(30*1000); // 30s
+    pwm->setWindow(20*1000); // 20s
 
     if(!SysfsGPIO::configureGPIO(gpiopin, GPIO_DIRECTION_OUTPUT))
     {
