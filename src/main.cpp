@@ -18,7 +18,6 @@ MosqConnect *mqtt;
 
 int main()
 {
-    int rc;
     mosqpp::lib_init();
     mqtt = new MosqConnect(
             "FunTechRegulator",
@@ -185,6 +184,13 @@ int main()
     QElapsedTimer timer;
     timer.start();
 
+    myOut() << "mqtt loop start";
+    int rc = mqtt->loop_start();
+    if(rc)
+    {
+        myErr() << "loop start rc:" << rc;
+        //exit???
+    }
 
     myOut() << "Lets start...";
     while(true)
@@ -203,18 +209,6 @@ int main()
             //regulators[i.key()].print();
         }
 
-
-        
-        //This check is a 1800ms operation...?
-        //switch to 
-        //http://mosquitto.org/api/files/mosquitto-h.html#mosquitto_loop_forever
-        rc = mqtt->loop();
-        //myOut() << "rc" << rc;
-        if(rc)
-        {
-            myOut() << "reconnect...";
-            mqtt->reconnect();
-        }
 
         sleep = loopTimer.correctedTime(timer.elapsed());
         if(sleep!=0)
