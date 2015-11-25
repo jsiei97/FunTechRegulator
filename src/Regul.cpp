@@ -21,7 +21,7 @@ Regul::Regul()
 
     input = 20;
     sentInput = 100;
-    diffInput = 0.3;
+    diffInput = 0.2;
 
     setpoint = 20;
     sentSetpoint = 100;
@@ -64,13 +64,14 @@ bool Regul::compute()
         if(res)
         {
             output = tmpout;
-            out->putValue(output);
-            QString str = timeToSend();
-            if(NULL != str && NULL != mqtt)
-            {
-                myOut() << mqttPublishTopic << str;
-                mqtt->pub(mqttPublishTopic, str);
-            }
+        }
+
+        out->putValue(output);
+        QString str = timeToSend();
+        if(NULL != str && NULL != mqtt)
+        {
+            myOut() << mqttPublishTopic << str;
+            mqtt->pub(mqttPublishTopic, str);
         }
         return res;
     }
@@ -120,7 +121,7 @@ QString Regul::timeToSend()
 
     //Always send every 10min
     //Time in ms
-    if(sendTimer.hasExpired(10*60*1000)) 
+    if(sendTimer.hasExpired(15*60*1000)) 
     {
         myOut() << "Trigger on sendTimer";
         timeToSend = true;
